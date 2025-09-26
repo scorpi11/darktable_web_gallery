@@ -1,5 +1,7 @@
 --[[
    TODO:
+   - use the folder selected by the user using dest_dir_widget.value
+   - implement "supported" callback to limit export to suited file formats
    - implement zoom function as present in PhotoSwipe
    - export thumbnail images instead of using imagemagigk/convert
    - fix transition of modal image view to not show old images when fading in
