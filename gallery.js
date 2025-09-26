@@ -71,23 +71,10 @@ document.addEventListener('DOMContentLoaded', function () {
     box.style.width = (width / scalefactor) + 'px';
     box.style.height = (height / scalefactor) + 'px';
     box.className = 'thumb-box';
-    box.style.display = 'flex';
-    box.style.alignItems = 'center';
-    box.style.objectFit = 'contain';
-    box.style.justifyContent = 'center';
-    box.style.background = 'none';
-    box.style.boxShadow = '0 8px 32px 8px rgba(0,0,0,0.35)';
     var img = document.createElement('img');
     img.src = thumb;
     img.alt = filename;
     img.className = 'thumb';
-    img.style.objectFit = 'contain';
-
-    img.style.flexShrink = '0';
-    img.style.minWidth = '100%';
-    img.style.minHeight = '100%';
-    img.style.maxWidth = '100%';
-    img.style.maxHeight = '100%';
     img.addEventListener('click', function (e) { e.stopPropagation(); showModal(filename); });
     box.appendChild(img);
     gallery.appendChild(box);

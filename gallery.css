@@ -76,6 +76,7 @@ body {
     background: none;
     padding: 0;
     border: 1px solid #667788;
+    
 }
 
 .gallery img:hover {
@@ -140,4 +141,22 @@ body {
     font-size: 12px;
     cursor: pointer;
     z-index: 1001;
+}
+
+.thumb {
+    object-fit: contain;
+    flex-shrink = 0;
+    min-width: 100%;
+    min-height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.thumb-box {
+    display: flex;
+    align-items: center;
+    object-fit: contain;
+    justify-content: center;
+    background: none;
+    box-shadow: 0 8px 32px 8px rgba(0,0,0,0.35);
 }
