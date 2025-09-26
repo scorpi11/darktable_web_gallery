@@ -77,9 +77,11 @@ For more examples, check out the tests in json_pretty_print_spec.lua.
 
 local M = {}
 
-function M:table_count(T)
+function M:table_count(table)
   local count = 0
-  for _ in pairs(T) do count = count + 1 end
+  for _ in pairs(table) do
+     count = count + 1
+  end
   return count
 end
 
