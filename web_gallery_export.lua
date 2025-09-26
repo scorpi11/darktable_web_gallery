@@ -1,11 +1,9 @@
 --[[
    TODO:
-   - export thumbnail images instead of using imagemagigk/convert
    - keep ordering by using extradata in storage function
    - implement zoom function as present in PhotoSwipe
+   - export thumbnail images instead of using imagemagigk/convert
    - fix transition of modal image view to not show old images when fading in
-   - ask json_pretty_print author how to use as a module
-   - move style settings applied in JS code to CSS
    - change JSON loading to avoid browser warning
    - copyright headers
 ]]
