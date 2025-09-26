@@ -94,7 +94,6 @@ script_data.metadata = {
   help = "https://docs.darktable.org/lua/stable/lua.scripts.manual/scripts/contrib/TODO"
 }
 
-script_data.destroy = nil -- function to destory the script
 script_data.destroy_method = nil -- set to hide for libs since we can't destroy them commpletely yet, otherwise leave as nil
 script_data.restart = nil -- how to restart the (lib) script after it's been hidden - i.e. make it visible again
 script_data.show = nil -- only required for libs since the destroy_method only hides them
@@ -102,6 +101,7 @@ script_data.show = nil -- only required for libs since the destroy_method only h
 local function destroy()
   dt.destroy_storage("module_webgallery")
 end
+script_data.destroy = destroy
 
 local function show_status(storage, image, format, filename,
   number, total, high_quality, extra_data)
@@ -113,7 +113,5 @@ local function initialize(storage, img_format, images, high_quality, extra_data)
 end
 
 dt.register_storage("module_webgallery", "Web gallery", show_status, build_gallery, nil, initialize, gallery_widget)
-
-script_data.destroy = destroy
 
 return script_data
