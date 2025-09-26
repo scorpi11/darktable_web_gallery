@@ -10,9 +10,7 @@
 ]]
 
 local dt = require "darktable"
-local du = require "lib/dtutils"
 local df = require "lib/dtutils.file"
-local dtsys = require "lib/dtutils.system"
 local json_pretty_print = require "lib/json_pretty_print"
 
 local title_widget = dt.new_widget("entry")
