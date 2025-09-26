@@ -1,6 +1,5 @@
 --[[
    TODO:
-   - keep ordering by using extradata in storage function
    - implement zoom function as present in PhotoSwipe
    - export thumbnail images instead of using imagemagigk/convert
    - fix transition of modal image view to not show old images when fading in
