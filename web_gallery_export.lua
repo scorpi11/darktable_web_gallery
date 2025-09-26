@@ -46,10 +46,6 @@ local function build_gallery(storage, images_table, extra_data)
       dt.print_error("convert not found")
       return
    end
-   if not df.check_if_bin_exists("mkdir") then
-      dt.print_error("mkdir not found")
-      return
-   end
    
    local imageFoldername = dt.configuration.tmp_dir.."/dtgal/images/"
    df.mkdir(imageFoldername)
