@@ -15,7 +15,7 @@ local json_pretty_print = require "lib/json_pretty_print"
 
 local title_widget = dt.new_widget("entry")
 {
-   placeholder="slideshow title"
+   placeholder="Darktable gallery"
 }
 
 local dest_dir_widget = dt.new_widget("file_chooser_button")
@@ -32,7 +32,7 @@ local gallery_widget = dt.new_widget("box")
     dt.new_widget("label"){label = "gallery title"},
     title_widget,
     dt.new_widget("label"){label = "destination directory"},
-    dist_dir_widget
+    dest_dir_widget
 }
 
 local function get_file_name(file)
