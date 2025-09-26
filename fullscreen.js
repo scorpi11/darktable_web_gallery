@@ -1,14 +1,12 @@
 var isFullscreen = false;
 
 var toggleFullscreen = function (ele) {
-    if(isFullscreen == false) {
-		requestFullscreen(ele);
-    } else {
-		exitFullscreen(ele);
-    }
+	return isFullscreen ? exitFullscreen(ele) : requestFullscreen(ele);
 };
 
 var requestFullscreen = function (ele) {
+	if(isFullscreen == true) return 0 ;
+
 	isFullscreen = true;
 	if (ele.requestFullscreen) {
 		ele.requestFullscreen();
@@ -24,6 +22,8 @@ var requestFullscreen = function (ele) {
 };
 
 var exitFullscreen = function () {
+        if(isFullscreen == false) return 0;
+
 	isFullscreen = false;
 	if (document.exitFullscreen) {
 		document.exitFullscreen();
@@ -38,13 +38,3 @@ var exitFullscreen = function () {
 	}
 };
 
-//function startup() {
-//    var text = document.body;
-
-//    text.addEventListener("click", function(e) {
-//	e.preventDefault();
-//	toggleFullscreen(document.documentElement);
-//    });
-//};
-
-//document.addEventListener("DOMContentLoaded", startup);
