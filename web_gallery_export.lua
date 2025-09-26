@@ -102,7 +102,7 @@ script_data.restart = nil -- how to restart the (lib) script after it's been hid
 script_data.show = nil -- only required for libs since the destroy_method only hides them
 
 local function destroy()
-  dt.destroy_storage("module_webgallery_new")
+  dt.destroy_storage("module_webgallery")
 end
 
 local function show_status(storage, image, format, filename,
@@ -114,7 +114,7 @@ local function initialize(storage, img_format, images, high_quality, extra_data)
    extra_data["images"] = images -- needed, to preserve images order
 end
 
-dt.register_storage("module_webgallery_new", "export web gallery (new)", show_status, build_gallery, nil, initialize, gallery_widget)
+dt.register_storage("module_webgallery", "Web gallery", show_status, build_gallery, nil, initialize, gallery_widget)
 
 script_data.destroy = destroy
 
