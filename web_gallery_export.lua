@@ -57,13 +57,16 @@ local function build_gallery(storage, images_table, extra_data)
    if title_widget.text ~= "" then
       title = title_widget.text
    end
+
+   local images_ordered = extra_data["images"] -- process images in the correct order
    
    local gallerydata = { name = title }
 
    local images = {}
    local index = 1
    print("populate JSON images table")
-   for image, filename in pairs(images_table) do
+   for i, image in pairs(images_ordered) do
+      local filename = images_table[image]
       local convertToThumbCommand = "convert -size 512x512 "..filename.." -resize 512x512 +profile \"*\" "..imageFoldername.."thumb_"..get_file_name(filename)
       dt.control.execute( convertToThumbCommand)
       df.file_move(filename, imageFoldername..get_file_name(filename))
@@ -108,7 +111,11 @@ local function show_status(storage, image, format, filename,
     dt.print(string.format("export image %i/%i", number, total))
 end
 
-dt.register_storage("module_webgallery_new", "export web gallery (new)", show_status, build_gallery, nil, nil, gallery_widget)
+local function initialize(storage, img_format, images, high_quality, extra_data)
+   extra_data["images"] = images -- needed, to preserve images order
+end
+
+dt.register_storage("module_webgallery_new", "export web gallery (new)", show_status, build_gallery, nil, initialize, gallery_widget)
 
 script_data.destroy = destroy
 
