@@ -45,7 +45,7 @@ local function build_gallery(storage, images_table, extra_data)
       return
    end
    
-   local imageFoldername = dt.configuration.tmp_dir.."/dtgal/images/"
+   local imageFoldername = dest_dir_widget.value.."/images/"
    df.mkdir(imageFoldername)
    
    local title = "Darktable export"
@@ -72,7 +72,7 @@ local function build_gallery(storage, images_table, extra_data)
    
    gallerydata.images = images
    
-   local fileOut, errr = io.open(dt.configuration.tmp_dir.."/dtgal/images.json", 'w+')
+   local fileOut, errr = io.open(dest_dir_widget.value.."/images.json", 'w+')
    if fileOut then
       print("write JSON file")
       fileOut:write(json_pretty_print:pretty_print(gallerydata))
