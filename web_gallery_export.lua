@@ -1,8 +1,20 @@
+--[[
+   TODO:
+   - export thumbnail images instead of using imagemagigk/convert
+   - keep ordering by using extradata in storage function
+   - implement zoom function as present in PhotoSwipe
+   - fix transition of modal image view to not show old images when fading in
+   - ask json_pretty_print author how to use as a module
+   - move style settings applied in JS code to CSS
+   - change JSON loading to avoid browser warning
+   - copyright headers
+]]
 
 local dt = require "darktable"
 local du = require "lib/dtutils"
 local df = require "lib/dtutils.file"
 local dtsys = require "lib/dtutils.system"
+local json_pretty_print = require "lib/json_pretty_print"
 
 local title_widget = dt.new_widget("entry")
 {
@@ -25,142 +37,6 @@ local gallery_widget = dt.new_widget("box")
     dt.new_widget("label"){label = "destination directory"},
     dist_dir_widget
 }
-
-local compare = default_compare
-local escape_special_chars = 1
-local indent = 0
-local out = {}
-
-function table_count(T)
-  local count = 0
-  for _ in pairs(T) do count = count + 1 end
-  return count
-end
-
-function escape_chars(str)
-  -- Escape backslashes (I couldn't get this to work with gsub / regexes)
-  local chars = {}
-  for i = 1, #str do
-    local cur_char = str:sub(i, i)
-    if cur_char == "\\" then
-      chars[#chars + 1] = "\\"
-    end
-    chars[#chars + 1] = cur_char
-  end
-
-  local item = table.concat(chars)
-  -- Escape escape sequences (see http://www.lua.org/manual/5.1/manual.html#2.1)
-  return item:gsub("[\a\b\f\n\r\t\v\\\"']", {
-    ["\a"] = "\\a",
-    ["\b"] = "\\b",
-    ["\f"] = "\\f",
-    ["\n"] = "\\n",
-    ["\r"] = "\\r",
-    ["\t"] = "\\t",
-    ["\v"] = "\\v",
-    ['"'] = '\\"',
-    ["'"] = "\\'",
-  })
-end
-
-function format_string(value)
-  local result = escape_special_chars and escape_chars(value) or value
-  emit(([["%s"]]):format(result), true)
-end
-
-local pairs_by_keys = function(tbl, compare)
-  local keys = {}
-  for key, _ in pairs(tbl) do
-    table.insert(keys, key)
-  end
-  table.sort(keys, compare)
-  local i = 0
-  -- Return an iterator function
-  return function()
-    i = i + 1
-    return keys[i] and keys[i], tbl[keys[i]] or nil
-  end
-end
-
-function format_table(value, add_indent)
-  local tbl_count = table_count(value)
-  emit("{\n", add_indent)
-  indent = indent + 2
-  local prev_indent = indent
-  local i = 1
-  for k, v in pairs_by_keys(value, compare) do
-    emit(('"%s": '):format(k), true)
-    if type(v) == "string" then
-      -- Reset indent temporarily
-      indent = 0
-    end
-    format_value(v)
-    indent = prev_indent
-    if i == tbl_count then
-      emit("\n")
-    else
-      emit(",\n")
-    end
-    i = i + 1
-  end
-  indent = indent - 2
-  emit("}", true)
-end
-
-function format_array(value)
-  local array_count = #value
-  emit("[\n")
-  indent = indent + 2
-  for i, item in ipairs(value) do
-    -- Also indent the following items
-    format_value(item, true)
-    if i == array_count then
-      emit("\n")
-    else
-      emit(",\n")
-    end
-  end
-  indent = indent - 2
-  emit("]", true)
-end
-
-function emit(value, add_indent)
-  if add_indent then
-    out[#out + 1] = (" "):rep(indent)
-  end
-  out[#out + 1] = value
-end
-
-function format_value(value, add_indent)
-  if value == nil then
-    emit("null")
-  end
-  local _type = type(value)
-  if _type == "string" then
-    format_string(value)
-  elseif _type == "number" then
-    emit(tostring(value), add_indent)
-  elseif _type == "table" then
-    local count = table_count(value)
-    if count == 0 then
-      emit("{}")
-    elseif #value > 0 then
-      format_array(value)
-    else
-      format_table(value, add_indent)
-    end
-  end
-end
-
-local default_compare = function(a, b)
-  return a:lower() < b:lower()
-end
-
-function pretty_print(data, compare, escape_special_chars)
-  
-  format_value(data)
-  return table.concat(out)
-end
 
 local function get_file_name(file)
       return file:match("[^/]*.$")
@@ -185,7 +61,6 @@ local function build_gallery(storage, images_table, extra_data)
    end
    
    local gallerydata = { name = title }
-   -- local files = { "image1.jpg", "image2.jpg", "image3.jpg" }
 
    local images = {}
    local index = 1
@@ -204,7 +79,7 @@ local function build_gallery(storage, images_table, extra_data)
    local fileOut, errr = io.open(dt.configuration.tmp_dir.."/dtgal/images.json", 'w+')
    if fileOut then
       print("write JSON file")
-      fileOut:write(pretty_print(gallerydata))
+      fileOut:write(json_pretty_print:pretty_print(gallerydata))
    else
       log.msg(log.error, errr)
    end
