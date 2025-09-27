@@ -80,6 +80,17 @@ local function build_gallery(storage, images_table, extra_data)
    end
 
    fileOut:close()
+   gfsrc = dt.configuration.config_dir
+   gfiles = {
+      "index.html",
+      "gallery.css",
+      "gallery.js",
+      "fullscreen.js"
+   }
+
+   for _, file in ipairs(gfiles) do
+      df.file_copy(gfsrc..file", dest_dir_widget.value..file")
+   end
 end
 
 local script_data = {}
