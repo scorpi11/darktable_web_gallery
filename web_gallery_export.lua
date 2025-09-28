@@ -1,3 +1,21 @@
+--[[Export module to create a web gallery from selected images
+
+  copyright (c) 2025 Tino Mettler
+  
+  darktable is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+  
+  darktable is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public License
+  along with darktable.  If not, see <http://www.gnu.org/licenses/>.
+]]
+
 --[[
    TODO:
    - JS: touch support https://medium.com/codex/image-slider-using-vanilla-html-css-and-javascript-b95c7fe16955 https://github.com/briquet9/image-slider/tree/main
