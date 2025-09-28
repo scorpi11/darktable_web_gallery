@@ -12,17 +12,25 @@ local dt = require "darktable"
 local df = require "lib/dtutils.file"
 local json_pretty_print = require "lib/json_pretty_print"
 
+local temp = dt.preferences.read('web_gallery', 'title', 'string')
+if temp == nil then temp = 'Darktable gallery' end
+print("title: "..temp)
+
 local title_widget = dt.new_widget("entry")
 {
-   placeholder="Darktable gallery"
+   text = temp
 }
+
+local temp = dt.preferences.read('web_gallery', 'destination_dir', 'string')
+if temp == nil then temp = '' end
 
 local dest_dir_widget = dt.new_widget("file_chooser_button")
 {
    title = "select output folder",
    tooltip = "select output folder",
-   value = "",
-   is_directory = true
+   value = temp,
+   is_directory = true,
+   changed_callback = function(this) dt.preferences.write('web_gallery', 'destination_dir', 'string', this.value) end
 }
 
 local gallery_widget = dt.new_widget("box")
@@ -107,7 +115,9 @@ script_data.restart = nil -- how to restart the (lib) script after it's been hid
 script_data.show = nil -- only required for libs since the destroy_method only hides them
 
 local function destroy()
-  dt.destroy_storage("module_webgallery")
+   print("destroy: write title "..title_widget.text)
+   dt.preferences.write('web_gallery', 'title', 'string', title_widget.text)
+   dt.destroy_storage("module_webgallery")
 end
 script_data.destroy = destroy
 
@@ -117,6 +127,8 @@ local function show_status(storage, image, format, filename,
 end
 
 local function initialize(storage, img_format, images, high_quality, extra_data)
+   print("init: write title "..title_widget.text)
+   dt.preferences.write('web_gallery', 'title', 'string', title_widget.text)
    extra_data["images"] = images -- needed, to preserve images order
 end
 
