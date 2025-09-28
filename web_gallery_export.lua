@@ -68,12 +68,16 @@ local function get_file_name(file)
       return file:match("[^/]*.$")
 end
 
+local function export_thumbnail(image, filename)
+  exporter = dt.new_format("jpeg")
+  exporter.quality = 90
+  exporter.max_height = 512
+  exporter.max_width = 512
+  exporter:write_image(image, filename, true)
+end
+
+  
 local function build_gallery(storage, images_table, extra_data)
-   if not df.check_if_bin_exists("convert") then
-      dt.print_error("convert not found")
-      return
-   end
-   
    local imageFoldername = dest_dir_widget.value.."/images/"
    df.mkdir(imageFoldername)
    
@@ -91,9 +95,8 @@ local function build_gallery(storage, images_table, extra_data)
    print("populate JSON images table")
    for i, image in pairs(images_ordered) do
       local filename = images_table[image]
-      local convertToThumbCommand = "convert -size 512x512 "..filename.." -resize 512x512 +profile \"*\" "..imageFoldername.."thumb_"..get_file_name(filename)
-      dt.control.execute( convertToThumbCommand)
-      df.file_move(filename, imageFoldername..get_file_name(filename))
+      export_thumbnail(image, imageFoldername.."/thumb_"..get_file_name(filename))
+      df.file_move(filename, imageFoldername.."/"..get_file_name(filename))
       local entry = {filename = "images/"..get_file_name(filename), width = image.final_width, height = image.final_height}
       images[index] = entry
       index = index + 1
