@@ -89,7 +89,7 @@ local function build_gallery(storage, images_table, extra_data)
    }
 
    for _, file in ipairs(gfiles) do
-      df.file_copy(gfsrc..file", dest_dir_widget.value..file")
+      df.file_copy(gfsrc.."/"..file, dest_dir_widget.value.."/"..file)
    end
 end
 
