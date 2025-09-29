@@ -121,7 +121,7 @@ local function copy_static_files(dest_dir)
     }
 
     for _, file in ipairs(gfiles) do
-        df.file_copy(gfsrc.."/"..file, dest_dir..file)
+        df.file_copy(gfsrc.."/"..file, dest_dir.."/"..file)
     end
 end
 
