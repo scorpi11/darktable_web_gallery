@@ -18,12 +18,11 @@
 
 --[[
    TODO:
-   - JS: touch support https://medium.com/codex/image-slider-using-vanilla-html-css-and-javascript-b95c7fe16955 https://github.com/briquet9/image-slider/tree/main
+   - JS: replace modal with image-slider https://medium.com/codex/image-slider-using-vanilla-html-css-and-javascript-b95c7fe16955 https://github.com/briquet9/image-slider/tree/main
    - Lua: remove dir if already existent
    - Lua: use share_dir once available in the API
    - Lua: implement "supported" callback to limit export to suited file formats
    - JS: implement zoom function as present in PhotoSwipe
-   - JS: fix transition of modal image view to not show old images when fading in
    - JS: change JSON loading to avoid browser warning
    - Lua: translations
    - copyright headers
