@@ -35,7 +35,6 @@ local json_pretty_print = require "lib/json_pretty_print"
 
 local temp = dt.preferences.read('web_gallery', 'title', 'string')
 if temp == nil then temp = 'Darktable gallery' end
-print("title: "..temp)
 
 local title_widget = dt.new_widget("entry")
 {
@@ -64,74 +63,92 @@ local gallery_widget = dt.new_widget("box")
 }
 
 local function get_file_name(file)
-      return file:match("[^/]*.$")
+    return file:match("[^/]*.$")
 end
 
 local function export_thumbnail(image, filename)
-  exporter = dt.new_format("jpeg")
-  exporter.quality = 90
-  exporter.max_height = 512
-  exporter.max_width = 512
-  exporter:write_image(image, filename, true)
+    dt.print("export thumbnail image "..filename)
+    exporter = dt.new_format("jpeg")
+    exporter.quality = 90
+    exporter.max_height = 512
+    exporter.max_width = 512
+    exporter:write_image(image, filename, true)
 end
 
+local function write_image(image, dest_dir, filename)
+    df.file_move(filename, dest_dir.."/"..get_file_name(filename))
+    export_thumbnail(image, dest_dir.."/thumb_"..get_file_name(filename))
+end
+
+local function fill_json_table(images_ordered, images_table, title, dest_dir)
+    dest_dir = dest_dir.."/images"
+    local gallery_data = { name = title }
+
+    local images = {}
+    local index = 1
+    for i, image in pairs(images_ordered) do
+        local filename = images_table[image]
+        write_image(image, dest_dir, filename)
+        local entry = {filename = "images/"..get_file_name(filename), width = image.final_width, height = image.final_height}
+        images[index] = entry
+        index = index + 1
+    end
+
+    gallery_data.images = images
+    return gallery_data
+end
+
+local function write_json_file(json_table, dest_dir)
+    dt.print("write JSON file")
+
+    local fileOut, errr = io.open(dest_dir.."/images.json", 'w+')
+    if fileOut then
+        fileOut:write(json_pretty_print:pretty_print(json_table))
+    else
+        log.msg(log.error, errr)
+    end
+    fileOut:close()
+end
+
+local function copy_static_files(dest_dir)
+    dt.print("copy static gallery files")
+    gfsrc = dt.configuration.config_dir
+    gfiles = {
+        "index.html",
+        "gallery.css",
+        "gallery.js",
+        "fullscreen.js"
+    }
+
+    for _, file in ipairs(gfiles) do
+        df.file_copy(gfsrc.."/"..file, dest_dir..file)
+    end
+end
 
 local function build_gallery(storage, images_table, extra_data)
-   local imageFoldername = dest_dir_widget.value.."/images/"
-   df.mkdir(imageFoldername)
+    local dest_dir = dest_dir_widget.value
+    df.mkdir(dest_dir)
+    df.mkdir(dest_dir.."/images")
 
-   local title = "Darktable export"
-   if title_widget.text ~= "" then
-      title = title_widget.text
-   end
+    local images_ordered = extra_data["images"] -- process images in the correct order
 
-   local images_ordered = extra_data["images"] -- process images in the correct order
+    local title = "Darktable export"
+    if title_widget.text ~= "" then
+        local title = title_widget.text
+    end
 
-   local gallerydata = { name = title }
-
-   local images = {}
-   local index = 1
-   print("populate JSON images table")
-   for i, image in pairs(images_ordered) do
-      local filename = images_table[image]
-      export_thumbnail(image, imageFoldername.."/thumb_"..get_file_name(filename))
-      df.file_move(filename, imageFoldername.."/"..get_file_name(filename))
-      local entry = {filename = "images/"..get_file_name(filename), width = image.final_width, height = image.final_height}
-      images[index] = entry
-      index = index + 1
-   end
-
-   gallerydata.images = images
-
-   local fileOut, errr = io.open(dest_dir_widget.value.."/images.json", 'w+')
-   if fileOut then
-      print("write JSON file")
-      fileOut:write(json_pretty_print:pretty_print(gallerydata))
-   else
-      log.msg(log.error, errr)
-   end
-
-   fileOut:close()
-   gfsrc = dt.configuration.config_dir
-   gfiles = {
-      "index.html",
-      "gallery.css",
-      "gallery.js",
-      "fullscreen.js"
-   }
-
-   for _, file in ipairs(gfiles) do
-      df.file_copy(gfsrc.."/"..file, dest_dir_widget.value.."/"..file)
-   end
+    gallerydata = fill_json_table(images_ordered, images_table, title, dest_dir)
+    write_json_file(gallerydata, dest_dir)
+    copy_static_files(dest_dir)
 end
 
 local script_data = {}
 
 script_data.metadata = {
-   name = "website gallery (new)",
-   purpose = "create a web gallery from exported images",
-  author = "Tino Mettler <tino+darktable@tikei.de>",
-  help = "https://docs.darktable.org/lua/stable/lua.scripts.manual/scripts/contrib/TODO"
+    name = "website gallery (new)",
+    purpose = "create a web gallery from exported images",
+    author = "Tino Mettler <tino+darktable@tikei.de>",
+    help = "https://docs.darktable.org/lua/stable/lua.scripts.manual/scripts/contrib/TODO"
 }
 
 script_data.destroy_method = nil -- set to hide for libs since we can't destroy them commpletely yet, otherwise leave as nil
@@ -139,9 +156,8 @@ script_data.restart = nil -- how to restart the (lib) script after it's been hid
 script_data.show = nil -- only required for libs since the destroy_method only hides them
 
 local function destroy()
-   print("destroy: write title "..title_widget.text)
-   dt.preferences.write('web_gallery', 'title', 'string', title_widget.text)
-   dt.destroy_storage("module_webgallery")
+    dt.preferences.write('web_gallery', 'title', 'string', title_widget.text)
+    dt.destroy_storage("module_webgallery")
 end
 script_data.destroy = destroy
 
@@ -151,9 +167,8 @@ local function show_status(storage, image, format, filename,
 end
 
 local function initialize(storage, img_format, images, high_quality, extra_data)
-   print("init: write title "..title_widget.text)
-   dt.preferences.write('web_gallery', 'title', 'string', title_widget.text)
-   extra_data["images"] = images -- needed, to preserve images order
+    dt.preferences.write('web_gallery', 'title', 'string', title_widget.text)
+    extra_data["images"] = images -- needed, to preserve images order
 end
 
 dt.register_storage("module_webgallery", "website gallery (new)", show_status, build_gallery, nil, initialize, gallery_widget)
