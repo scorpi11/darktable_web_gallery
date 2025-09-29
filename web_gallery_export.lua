@@ -112,7 +112,7 @@ end
 
 local function copy_static_files(dest_dir)
     dt.print("copy static gallery files")
-    gfsrc = dt.configuration.config_dir
+    gfsrc = dt.configuration.config_dir.."/dtgal"
     gfiles = {
         "index.html",
         "gallery.css",
