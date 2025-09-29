@@ -1,17 +1,17 @@
 --[[Export module to create a web gallery from selected images
 
   copyright (c) 2025 Tino Mettler
-  
+
   darktable is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
-  
+
   darktable is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
-  
+
   You should have received a copy of the GNU General Public License
   along with darktable.  If not, see <http://www.gnu.org/licenses/>.
 ]]
@@ -75,18 +75,18 @@ local function export_thumbnail(image, filename)
   exporter:write_image(image, filename, true)
 end
 
-  
+
 local function build_gallery(storage, images_table, extra_data)
    local imageFoldername = dest_dir_widget.value.."/images/"
    df.mkdir(imageFoldername)
-   
+
    local title = "Darktable export"
    if title_widget.text ~= "" then
       title = title_widget.text
    end
 
    local images_ordered = extra_data["images"] -- process images in the correct order
-   
+
    local gallerydata = { name = title }
 
    local images = {}
@@ -100,9 +100,9 @@ local function build_gallery(storage, images_table, extra_data)
       images[index] = entry
       index = index + 1
    end
-   
+
    gallerydata.images = images
-   
+
    local fileOut, errr = io.open(dest_dir_widget.value.."/images.json", 'w+')
    if fileOut then
       print("write JSON file")
@@ -128,7 +128,7 @@ end
 local script_data = {}
 
 script_data.metadata = {
-   name = "export web gallery (new)",
+   name = "website gallery (new)",
    purpose = "create a web gallery from exported images",
   author = "Tino Mettler <tino+darktable@tikei.de>",
   help = "https://docs.darktable.org/lua/stable/lua.scripts.manual/scripts/contrib/TODO"
@@ -156,6 +156,6 @@ local function initialize(storage, img_format, images, high_quality, extra_data)
    extra_data["images"] = images -- needed, to preserve images order
 end
 
-dt.register_storage("module_webgallery", "Web gallery", show_status, build_gallery, nil, initialize, gallery_widget)
+dt.register_storage("module_webgallery", "website gallery (new)", show_status, build_gallery, nil, initialize, gallery_widget)
 
 return script_data
