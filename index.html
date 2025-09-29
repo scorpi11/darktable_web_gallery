@@ -5,21 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Image Gallery</title>
     <link rel="stylesheet" href="gallery.css">
+    <link rel="stylesheet" href="slider.css">
 </head>
 <body>
-<div class="heading">
-  <h1 id="gallery-title">Image Gallery</h1>
-  </div>
+    <div class="heading">
+	<h1 id="gallery-title">Image Gallery</h1>
+    </div>
     <div id="gallery" class="gallery"></div>
-    <div id="modal" class="modal">
-        <span id="close" class="close">&times;</span>
+    <div class="slider" id="slider1">
+              <span id="close" class="close">&times;</span>
         <span id="fullscreen" class="fullscreen">&#x26F6;</span>
         <span id="counter" class="counter">        </span>
-        <button id="prev-btn" class="nav-btn" style="position:absolute;left:32px;top:50%;transform:translateY(-50%);font-size:2em;z-index:1001;">&#8592;</button>
 
-    <img id="modal-img" class="modal-content" src="" alt="Full Size" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);">
-    <img id="modal-img-fade" class="modal-content" src="" alt="" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);opacity:0;pointer-events:none;">
-        <button id="next-btn" class="nav-btn" style="position:absolute;right:32px;top:50%;transform:translateY(-50%);font-size:2em;z-index:1001;">&#8594;</button>
+	<div id="slides1" class="slides">
+	</div>
+	<div id="nav1" class="slider-nav">
+	    <div class="slider-arrow previous">
+		<img src="arrow-sm-right.svg" />
+	    </div>
+	    <div class="slider-arrow next">
+		<img src="arrow-sm-right.svg" />
+	    </div>
+        </div>
     </div>
     <script src="gallery.js"></script>
     <script src="fullscreen.js"></script>

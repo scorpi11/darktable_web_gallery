@@ -1,125 +1,144 @@
-// Load and parse JSON synchronously as requested
-var file = new XMLHttpRequest();
-file.open("GET", "images.json", false);
-file.send();
-var json_data = JSON.parse(file.responseText);
-var images = json_data.images;
-
 function showModal(imageSrc) {
-    const modal = document.getElementById('modal');
-    const modalImg = document.getElementById('modal-img');
-    const modalImgFade = document.getElementById('modal-img-fade');
-    // Set fade image to black
-    modalImgFade.src = '';
-    modalImgFade.style.background = '#000';
-    modalImgFade.style.opacity = 1;
-    // Preload next image
-    var preloadImg = new Image();
-    preloadImg.src = imageSrc;
-    preloadImg.onload = function () {
-	// Set new image src
-	modalImg.src = imageSrc;
-	modalImg.style.opacity = 0;
-	setTimeout(function () {
-	    modalImg.style.opacity = 1;
-	    modalImgFade.style.opacity = 0;
-	    modalImgFade.style.background = 'none';
-	}, 40); // Short delay for crossfade
-    };
-    modal.style.display = 'flex';
-    currentIndex = images.findIndex(function (img) { return (img.filename) === imageSrc; });
-    updateNavButtons();
-    updateCounter();
-    // Preload previous and next images for instant navigation
-    if (currentIndex > 0) {
-	var prevImg = new Image();
-	prevImg.src = images[currentIndex - 1].filename;
-    }
-    if (currentIndex < images.length - 1) {
-	var nextImg = new Image();
-	nextImg.src = images[currentIndex + 1].filename;
-    }
+    const slider = document.getElementById('slider1');
+    const gallery = document.getElementById('gallery');
+    slider.style.display = 'grid';
+    gallery.style.display = 'none';
 }
 
-function updateCounter() {
-    const counter = document.getElementById('counter');
-    counter.textContent = (currentIndex + 1) + ' / ' + images.length;
-}
-function updateNavButtons() {
-    document.getElementById('prev-btn').style.display = (currentIndex > 0) ? 'block' : 'none';
-    document.getElementById('next-btn').style.display = (currentIndex < images.length - 1) ? 'block' : 'none';
-}
 
 document.addEventListener('DOMContentLoaded', function () {
+    currentIndex = 1;
+    window.onclick = function (event) {
+	event.stopPropagation();
+	const slider = document.getElementById('slider1');
+	if (event.target === slider) {
+	    exitFullscreen(document.documentElement);
+	    const gallery = document.getElementById('gallery');
+	    slider.style.display = 'none';
+	    gallery.style.display = 'flex';
+	}
+    };
+    
+    function updateCounter(direction) {
+	const counter = document.getElementById('counter');
+	currentIndex += direction;
+	counter.textContent = (currentIndex) + ' / ' + images.length;
+    }
+    
+    function arrowClicked(event, direction) {
+        var slides = event.target.parentElement.parentElement.parentElement.getElementsByClassName('slides')[0];
+        slides.scrollLeft += direction * slides.scrollWidth / slides.childElementCount;
+	updateCounter(direction);
+    }
+
+    function scrolled(event) {
+        var id = event.target.parentElement.id;
+        var slides = document.getElementById(id).getElementsByClassName('slides')[0];
+        var scrollRatio = slides.scrollLeft / slides.scrollWidth;
+
+        var size = slides.childElementCount;
+
+        for (let i = 1; i <= size; i++) {
+            if (scrollRatio + 0.5 / size < i / size) {
+                if (i == 1) {
+                    document.getElementById(id).getElementsByClassName('previous')[0].style.visibility = "hidden";
+                } else {
+                    document.getElementById(id).getElementsByClassName('previous')[0].style.visibility = "visible";
+                }
+
+                if (i == size) {
+                    document.getElementById(id).getElementsByClassName('next')[0].style.visibility = "hidden";
+                } else {
+                    document.getElementById(id).getElementsByClassName('next')[0].style.visibility = "visible";
+                }
+
+                break;
+            }
+        }
+    }
+
+    var file = new XMLHttpRequest();
+    file.open("GET", "images.json", false);
+    file.send();
+    var json_data = JSON.parse(file.responseText);
+    var images = json_data.images;
+
     var gallery = document.getElementById('gallery');
+    var slides = document.getElementById('slides1');
+
     var title = document.getElementById('gallery-title');
     var pageTitle = document.getElementById('page-title');
     if (json_data.name) {
-	title.textContent = json_data.name;
-	pageTitle.textContent = json_data.name;
+        title.textContent = json_data.name;
+        pageTitle.textContent = json_data.name;
     }
+    
     images.forEach(function (imageObj) {
+        var slimg = document.createElement('img');
+        slimg.loading = 'lazy'
+        slimg.src = imageObj.filename;
+        var slidecontent = document.createElement('div');
+        slidecontent.className = 'content';
+        slidecontent.appendChild(slimg);
+        var slide = document.createElement('div');
+        slide.className = 'slide';
+        slide.appendChild(slidecontent);
+        slides.appendChild(slide);
 	var filename = imageObj.filename;
-	var width = parseInt(imageObj.width);
-	var height = parseInt(imageObj.height);
-	var thumb = imageObj.filename.replace(/images\/(.*)$/i, 'images/thumb_$1');
-	var aspect = height / width;
-	var box = document.createElement('div');
-	var boxsize = 150;
-	var sum = width + height;
-	var scalefactor = sum / (boxsize * 2.0);
-	box.style.width = (width / scalefactor) + 'px';
-	box.style.height = (height / scalefactor) + 'px';
-	box.className = 'thumb-box';
-	var img = document.createElement('img');
-	img.src = thumb;
-	img.alt = filename;
-	img.className = 'thumb';
-	img.addEventListener('click', function (e) { e.stopPropagation(); showModal(filename); });
-	box.appendChild(img);
-	gallery.appendChild(box);
+        var width = parseInt(imageObj.width);
+        var height = parseInt(imageObj.height);
+        var thumb = imageObj.filename.replace(/images\/(.*)$/i, 'images/thumb_$1');
+        var aspect = height / width;
+        var box = document.createElement('div');
+        var boxsize = 150;
+        var sum = width + height;
+        var scalefactor = sum / (boxsize * 2.0);
+        box.style.width = (width / scalefactor) + 'px';
+        box.style.height = (height / scalefactor) + 'px';
+        box.className = 'thumb-box';
+        var img = document.createElement('img');
+        img.src = thumb;
+        img.alt = filename;
+        img.className = 'thumb';
+        img.addEventListener('click', function (e) { e.stopPropagation(); showModal(filename); });
+        box.appendChild(img);
+        gallery.appendChild(box);
     });
 
-    document.getElementById('prev-btn').onclick = function (e) {
-	e.stopPropagation();
-	if (currentIndex > 0) {
-	    currentIndex--;
-	    showModal(images[currentIndex].filename);
-	}
-    };
-    document.getElementById('next-btn').onclick = function (e) {
-	e.stopPropagation();
-	if (currentIndex < images.length - 1) {
-	    currentIndex++;
-	    showModal(images[currentIndex].filename);
-	}
-    };
-
     document.getElementById('fullscreen').onclick = function (e) {
-	e.stopPropagation();
-	toggleFullscreen(document.documentElement);
+        e.stopPropagation();
+        toggleFullscreen(document.documentElement);
     }
 
     document.getElementById('close').onclick = function (e) {
-	e.stopPropagation
-	exitFullscreen(document.documentElement);
-	document.getElementById('modal').style.display = 'none';
-	// Reset both modal images to black for next open
-	var modalImg = document.getElementById('modal-img');
-	var modalImgFade = document.getElementById('modal-img-fade');
-	modalImg.src = '';
-	modalImg.style.opacity = 0;
-	modalImgFade.src = '';
-	modalImgFade.style.background = '#000';
-	modalImgFade.style.opacity = 1;
+        e.stopPropagation
+        exitFullscreen(document.documentElement);
+	const slider = document.getElementById('slider1');
+	const gallery = document.getElementById('gallery');
+	slider.style.display = 'none';
+	gallery.style.display = 'flex';
     };
 
-    window.onclick = function (event) {
-	event.stopPropagation();
-	const modal = document.getElementById('modal');
-	if (event.target === modal) {
-	    exitFullscreen(document.documentElement);
-	    modal.style.display = 'none';
-	}
-    };
+    document.querySelectorAll('.slider').forEach(
+        slider => {
+            slider.getElementsByClassName('previous')[0].style.visibility = "hidden";
+
+            if (slider.childElementCount < 1) {
+                slider.getElementsByClassName('next')[0].style.visibility = "hidden";
+            }
+
+            slider.querySelectorAll('.slider-arrow.previous img')[0].addEventListener(
+                'click', event => arrowClicked(event, -1)
+            );
+
+            slider.querySelectorAll('.slider-arrow.next img')[0].addEventListener(
+                'click', event => arrowClicked(event, 1)
+            );
+
+            slider.getElementsByClassName('slides')[0].addEventListener(
+                'scroll', event => scrolled(event)
+            );
+        }
+    );
+    updateCounter(0);
 });

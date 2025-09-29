@@ -116,8 +116,10 @@ local function copy_static_files(dest_dir)
     gfiles = {
         "index.html",
         "gallery.css",
+        "slider.css",
         "gallery.js",
-        "fullscreen.js"
+        "fullscreen.js",
+        "arrow-sm-right.svg"
     }
 
     for _, file in ipairs(gfiles) do
