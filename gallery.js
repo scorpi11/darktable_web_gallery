@@ -19,42 +19,43 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
     };
     
-    function updateCounter(direction) {
+    function updateCounter(index) {
 	const counter = document.getElementById('counter');
-	currentIndex += direction;
 	counter.textContent = (currentIndex) + ' / ' + images.length;
     }
     
     function arrowClicked(event, direction) {
-        var slides = event.target.parentElement.parentElement.parentElement.getElementsByClassName('slides')[0];
+        var slides = document.getElementsByClassName('slides')[0];
         slides.scrollLeft += direction * slides.scrollWidth / slides.childElementCount;
-	updateCounter(direction);
+	updateCounter(currentIndex + direction);
     }
 
+    // adjust visibility of left/right arrows
     function scrolled(event) {
         var id = event.target.parentElement.id;
         var slides = document.getElementById(id).getElementsByClassName('slides')[0];
         var scrollRatio = slides.scrollLeft / slides.scrollWidth;
-
         var size = slides.childElementCount;
 
-        for (let i = 1; i <= size; i++) {
-            if (scrollRatio + 0.5 / size < i / size) {
-                if (i == 1) {
-                    document.getElementById(id).getElementsByClassName('previous')[0].style.visibility = "hidden";
-                } else {
-                    document.getElementById(id).getElementsByClassName('previous')[0].style.visibility = "visible";
-                }
-
-                if (i == size) {
-                    document.getElementById(id).getElementsByClassName('next')[0].style.visibility = "hidden";
-                } else {
-                    document.getElementById(id).getElementsByClassName('next')[0].style.visibility = "visible";
-                }
-
-                break;
-            }
+	position = 1 + Math.round(scrollRatio * size);
+	if(position == currentIndex) {
+	    return;
+	}
+	
+        if (position == 1) {
+            document.getElementById(id).getElementsByClassName('previous')[0].style.visibility = "hidden";
+        } else {
+            document.getElementById(id).getElementsByClassName('previous')[0].style.visibility = "visible";
         }
+	
+        if (position == size) {
+            document.getElementById(id).getElementsByClassName('next')[0].style.visibility = "hidden";
+        } else {
+            document.getElementById(id).getElementsByClassName('next')[0].style.visibility = "visible";
+        }
+
+	currentIndex = position;
+	updateCounter(currentIndex);
     }
 
     var file = new XMLHttpRequest();
@@ -119,6 +120,15 @@ document.addEventListener('DOMContentLoaded', function () {
 	gallery.style.display = 'flex';
     };
 
+    // Keyboard navigation using left/right arrow keys
+    document.onkeyup = function(e) {
+	if (e.keyCode == 37) {
+	    arrowClicked(e, -1);
+	} else if (e.keyCode == 39) {
+	    arrowClicked(e, 1);
+	}
+    };
+    
     document.querySelectorAll('.slider').forEach(
         slider => {
             slider.getElementsByClassName('previous')[0].style.visibility = "hidden";
@@ -127,11 +137,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 slider.getElementsByClassName('next')[0].style.visibility = "hidden";
             }
 
-            slider.querySelectorAll('.slider-arrow.previous img')[0].addEventListener(
+            slider.querySelectorAll('.slider-arrow.previous')[0].addEventListener(
                 'click', event => arrowClicked(event, -1)
             );
 
-            slider.querySelectorAll('.slider-arrow.next img')[0].addEventListener(
+            slider.querySelectorAll('.slider-arrow.next')[0].addEventListener(
                 'click', event => arrowClicked(event, 1)
             );
 
@@ -140,5 +150,5 @@ document.addEventListener('DOMContentLoaded', function () {
             );
         }
     );
-    updateCounter(0);
+    updateCounter(1);
 });
