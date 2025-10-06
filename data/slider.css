@@ -33,7 +33,7 @@
     overflow-x: scroll;
     scroll-behavior: smooth;
     scroll-snap-type: x mandatory;
-    gap: 0px 10px;
+    gap: 0px 1vw;
     scrollbar-width: none;
     object-fit: contain;
 }
