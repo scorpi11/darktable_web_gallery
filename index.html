@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="height=device-height, initial-scale=1" />
     <title id="page-title">Image Gallery</title>
     <link rel="stylesheet" href="gallery.css">
     <link rel="stylesheet" href="slider.css">
@@ -16,17 +17,17 @@
         <div id="gallery" class="gallery"></div>
         <div class="slider" id="slider1">
             <div class="navgrid">
-                <div id="counter" class="counter"></div>
-                <div></div>
-                <div id="nav1" class="slider-nav nav">
+                <div id="counter" class="counter nav"></div>
+		<div class="spacer"></div>
+                <div id="nav1" class="slider-nav nav button">
                     <div id="previous" class="slider-arrow">&#9664;</div>
                 </div>
-                <div id="nav2" class="slider-nav nav">
+                <div id="nav2" class="slider-nav nav button">
                     <div id="next" class="slider-arrow">&#9654;</div>
                 </div>
-                <div></div>
-                <div id="fullscreen" class="fullscreen nav">&#x26F6;</div>
-                <div id="close" class="close nav">&times;</div>
+		<div class="spacer"></div>
+                <div id="fullscreen" class="fullscreen nav button">&#x26F6;</div>
+                <div id="close" class="close nav button">&times;</div>
             </div>
             <div id="slides1" class="slides"></div>
         </div>
