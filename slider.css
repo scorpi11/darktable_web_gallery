@@ -42,21 +42,15 @@ a:hover {
     object-fit: contain;
 }
 
-.slider .slide {
+.slider .slides .slide {
     scroll-snap-align: center;
     display: flex;
     justify-content: center;
     object-fit: contain;
-}
-
-.slider .slides .content {
-    display: flex;
     align-items: center;
-    justify-content: center;
-    object-fit: contain;
 }
 
-.slider .slides .content img {
+.slider .slides .slide img {
     object-fit: contain;
     max-width: 100vw;
     min-width: 100vw;

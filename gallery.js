@@ -20,8 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const thumbbox = e.target.parentElement;
         const gallery = thumbbox.parentElement;
         index = [...gallery.children].indexOf(thumbbox);
-        var slides = document.getElementsByClassName('slides')[0];
-        console.log(index, slides)
+        var slides = document.getElementById('slides1');
         updateCounter(index);
         document.getElementById('slider1').style.display = 'grid';
         document.getElementById('gallery').style.display = 'none';
@@ -33,15 +32,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function arrowClicked(event, direction) {
-        var slides = document.getElementsByClassName('slides')[0];
+        var slides = document.getElementById('slides1');
         slides.scrollLeft += direction * slides.scrollWidth / slides.childElementCount;
         updateCounter(currentIndex + direction);
     }
 
     // adjust visibility of left/right arrows
     function scrolled(event) {
-        var id = event.target.parentElement.id;
-        var slides = document.getElementById(id).getElementsByClassName('slides')[0];
+        var slides = document.getElementById('slides1');
         var scrollRatio = slides.scrollLeft / slides.scrollWidth;
         var size = slides.childElementCount;
 
@@ -87,12 +85,9 @@ document.addEventListener('DOMContentLoaded', function () {
         slimg.loading = 'lazy'
         slimg.src = imageObj.filename;
         slimg.className = 'slideimg';
-        var slidecontent = document.createElement('div');
-        slidecontent.className = 'content';
-        slidecontent.appendChild(slimg);
         var slide = document.createElement('div');
         slide.className = 'slide';
-        slide.appendChild(slidecontent);
+        slide.appendChild(slimg);
         slides.appendChild(slide);
         var filename = imageObj.filename;
         var width = parseInt(imageObj.width);
@@ -138,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     slider = document.querySelector('.slider');
-    slider.getElementsByClassName('slides')[0].addEventListener(
+    document.getElementById('slides1').addEventListener(
         'scroll', event => scrolled(event)
     );
 
