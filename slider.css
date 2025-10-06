@@ -63,10 +63,3 @@ a:hover {
     max-height: 95vh;
     min-height: 95vh;
 }
-
-.slider .navgrid .button:hover {
-    cursor: pointer;
-    color: black;
-  text-shadow: 0px 0px 10px #42c4ba90; /* FF3.5+, Opera 9+, Saf1+, Chrome, IE10 */
-
-}
