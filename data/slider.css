@@ -36,6 +36,7 @@
     gap: 0px 1vw;
     scrollbar-width: none;
     object-fit: contain;
+    background-color: black;
 }
 
 .slider .slides .slide {
