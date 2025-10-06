@@ -45,7 +45,7 @@ body {
     object-fit: contain;
     background: none;
     padding: 0;
-    border: 1px solid #667788;
+    border: 3px outset #807773;
 
 }
 
@@ -68,7 +68,7 @@ body {
     object-fit: contain;
     justify-content: center;
     background: none;
-    box-shadow: 0 8px 32pfx 8px rgba(0,0,0,0.35);
+    box-shadow: 0 2vw 8vw 2vw rgba(0,0,0,0.6);
 }
 
 .navgrid {
