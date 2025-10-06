@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="page-title">Image Gallery</title>
     <link rel="stylesheet" href="gallery.css">
     <link rel="stylesheet" href="slider.css">
-</head>
-<body>
-    <div class="heading">
-	<h1 id="gallery-title">Image Gallery</h1>
-    </div>
-    <div id="gallery" class="gallery"></div>
-    <div class="slider" id="slider1">
-	<span id="nav1" class="slider-nav">
-	    <div class="slider-arrow previous">
-		&#9664;
-	    </div>
-	</span>
-	<span id="nav2" class="slider-nav">
-	    <div class="slider-arrow next">
-		&#9654;
-	    </div>
-	</span>
-        <span id="close" class="close">&times;</span>
-        <span id="fullscreen" class="fullscreen">&#x26F6;</span>
-        <span id="counter" class="counter">        </span>
+    </head>
 
-	<div id="slides1" class="slides">
-	</div>
-    </div>
-    <script src="gallery.js"></script>
-    <script src="fullscreen.js"></script>
-</body>
+    <body>
+        <div id="heading1" class="heading">
+            <h1 id="gallery-title">Image Gallery</h1>
+        </div>
+        <div id="gallery" class="gallery"></div>
+        <div class="slider" id="slider1">
+            <div class="navgrid">
+                <div id="counter" class="counter"></div>
+                <div></div>
+                <div id="nav1" class="slider-nav nav">
+                    <div id="previous" class="slider-arrow">&#9664;</div>
+                </div>
+                <div id="nav2" class="slider-nav nav">
+                    <div id="next" class="slider-arrow">&#9654;</div>
+                </div>
+                <div></div>
+                <div id="fullscreen" class="fullscreen nav">&#x26F6;</div>
+                <div id="close" class="close nav">&times;</div>
+            </div>
+            <div id="slides1" class="slides"></div>
+        </div>
+        <script src="gallery.js"></script>
+        <script src="fullscreen.js"></script>
+    </body>
 </html>
