@@ -3,23 +3,6 @@
     padding: 0;
 }
 
-ul,ol {
-    padding-left: 2rem;
-    margin-bottom: 0.5rem
-}
-
-h1,h2 {
-    margin-bottom: 1em;
-}
-
-a {
-    text-decoration: none;
-    color: unset;
-}
-
-a:hover {
-    text-decoration: underline;
-}
 .slider {
     display: none;
     position: relative;
