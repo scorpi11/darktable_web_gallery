@@ -25,10 +25,6 @@ a:hover {
     position: relative;
     align-items: center;
     justify-content: center;
-    max-width: 100vw;
-    max-height: 100vh;
-    min-width: 100vw;
-    min-height: 100vh;
     object-fit: contain;
 }
 
@@ -52,8 +48,6 @@ a:hover {
 
 .slider .slides .slide img {
     object-fit: contain;
-    max-width: 100vw;
-    min-width: 100vw;
-    max-height: 95vh;
-    min-height: 95vh;
+    width: 100vw;
+    height: 95vh;
 }

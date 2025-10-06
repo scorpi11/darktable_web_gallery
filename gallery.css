@@ -82,8 +82,7 @@ body {
 }
 
 .nav {
-  max-height: 5vh;
-  min-height: 5vh;
+  height: 5vh;
   background-color: rgba(40,40,40, 0.2);
   justify-content: center;
   align-items: center;
