@@ -113,22 +113,33 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('fullscreen').onclick = function (e) {
         e.stopPropagation();
         toggleFullscreen(document.documentElement);
-    }
+    };
 
-    document.getElementById('close').onclick = function (e) {
-        e.stopPropagation
+    function closeModal() {
         exitFullscreen(document.documentElement);
         document.getElementById('slider1').style.display = 'none';
         document.getElementById('gallery').style.display = 'flex';
         document.getElementById('heading1').style.display = 'grid';
     };
 
+    document.getElementById('close').onclick = function (e) {
+        e.stopPropagation();
+	closeModal();
+    };
+
     // Keyboard navigation using left/right arrow keys
     document.onkeyup = function (e) {
-        if (e.keyCode == 37) {
+        e.stopPropagation();
+	switch(e.key) {
+	case "Escape":
+	    closeModal();
+	    break;
+	case "ArrowLeft":
             arrowClicked(e, -1);
-        } else if (e.keyCode == 39) {
-            arrowClicked(e, 1);
+	    break;
+	case "ArrowRight":
+	    arrowClicked(e, 1);
+	    break;
         }
     };
 
