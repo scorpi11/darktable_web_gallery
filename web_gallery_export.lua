@@ -77,6 +77,13 @@ local function write_image(image, dest_dir, filename)
     export_thumbnail(image, dest_dir.."/thumb_"..get_file_name(filename))
 end
 
+local function get_dimensions(image)
+    if image.final_width > 0 then
+        return image.final_width, image.final_height
+    end
+    return image.width, image.height
+end
+
 local function fill_json_table(images_ordered, images_table, title, dest_dir)
     dest_dir = dest_dir.."/images"
     local gallery_data = { name = title }
@@ -86,8 +93,10 @@ local function fill_json_table(images_ordered, images_table, title, dest_dir)
     for i, image in pairs(images_ordered) do
         local filename = images_table[image]
         write_image(image, dest_dir, filename)
-        local entry = {filename = "images/"..get_file_name(filename), width = image.final_width, height = image.final_height}
-        images[index] = entry
+        local entry = { filename = "images/"..get_file_name(filename),
+			width, height = get_dimensions(image)
+	}
+	images[index] = entry
         index = index + 1
     end
 
