@@ -141,7 +141,7 @@ local function build_gallery(storage, images_table, extra_data)
 
     local title = "Darktable export"
     if title_widget.text ~= "" then
-        local title = title_widget.text
+        title = title_widget.text
     end
 
     gallerydata = fill_json_table(images_ordered, images_table, title, dest_dir)
