@@ -17,20 +17,10 @@
 
 document.addEventListener('DOMContentLoaded', function () {
     currentIndex = 1;
-    window.onclick = function (event) {
-        event.stopPropagation();
-        const slider = document.getElementById('slider1');
-        if (event.target === slider) {
-            exitFullscreen(document.documentElement);
-            const gallery = document.getElementById('gallery');
-            slider.style.display = 'none';
-            gallery.style.display = 'flex';
-        }
-    };
 
     function updateCounter(index) {
         const counter = document.getElementById('counter');
-        counter.textContent = (currentIndex) + ' / ' + images.length;
+        counter.textContent = (index) + ' / ' + images.length;
     }
 
     function showModal(e) {
@@ -38,7 +28,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const gallery = thumbbox.parentElement;
         index = [...gallery.children].indexOf(thumbbox);
         var slides = document.getElementById('slides1');
-        updateCounter(index);
         document.getElementById('slider1').style.display = 'grid';
         document.getElementById('gallery').style.display = 'none';
         document.getElementById('heading1').style.display = 'none';
@@ -51,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function arrowClicked(event, direction) {
         var slides = document.getElementById('slides1');
         slides.scrollLeft += direction * slides.scrollWidth / slides.childElementCount;
-        updateCounter(currentIndex + direction);
     }
 
     // adjust visibility of left/right arrows
