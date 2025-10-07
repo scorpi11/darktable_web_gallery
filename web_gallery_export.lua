@@ -93,10 +93,11 @@ local function fill_json_table(images_ordered, images_table, title, dest_dir)
     for i, image in pairs(images_ordered) do
         local filename = images_table[image]
         write_image(image, dest_dir, filename)
+        width, height = get_dimensions(image)
         local entry = { filename = "images/"..get_file_name(filename),
-			width, height = get_dimensions(image)
-	}
-	images[index] = entry
+                        width = width, height = height
+        }
+        images[index] = entry
         index = index + 1
     end
 
