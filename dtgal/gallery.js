@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateCounter(index) {
         const counter = document.getElementById('counter');
-        counter.textContent = (currentIndex) + ' / ' + images.length;
+        counter.textContent = (index) + ' / ' + images.length;
+	console.log("updateCounter:", index);
     }
 
     function showModal(e) {
@@ -38,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const gallery = thumbbox.parentElement;
         index = [...gallery.children].indexOf(thumbbox);
         var slides = document.getElementById('slides1');
-        updateCounter(index);
+        updateCounter(index + 1);
         document.getElementById('slider1').style.display = 'grid';
         document.getElementById('gallery').style.display = 'none';
         document.getElementById('heading1').style.display = 'none';
@@ -46,12 +47,35 @@ document.addEventListener('DOMContentLoaded', function () {
             slides.scroll(index * slides.scrollWidth / slides.childElementCount, 0);
         else
             setTimeout(() => {slides.scroll({ top: 0, left: 0, behavior: "auto" });}, 5);
+	slimages = slides.getElementsByClassName("slideimg");
+	newpos = index;
+	console.log("loading:", newpos);
+	slimages[index].src = slimages[newpos].alt;
+	if((newpos - 1) >= 0) {
+            console.log("loading:", newpos - 1);
+            slimages[newpos - 1 ].src = slimages[newpos - 1].alt;
+	}
+	console.log("loading:", newpos + 1);
+	slimages[newpos + 1 ].src = slimages[newpos + 1].alt;
+
     }
 
     function arrowClicked(event, direction) {
         var slides = document.getElementById('slides1');
         slides.scrollLeft += direction * slides.scrollWidth / slides.childElementCount;
-        updateCounter(currentIndex + direction);
+        slimages = slides.getElementsByClassName("slideimg");
+	newpos = currentIndex + direction - 1;
+	if(direction == -1) {
+	    if((newpos - 1) >= 0) {
+                slimages[newpos - 1].src = slimages[newpos - 1].alt;
+                console.log("loading:", newpos - 1);
+	    }
+	}
+	else {
+            slimages[newpos + 1 ].src = slimages[newpos + 1].alt;
+	    console.log("loading:", newpos + 1);
+	}
+	//updateCounter(currentIndex + direction);
     }
 
     // adjust visibility of left/right arrows
@@ -77,6 +101,17 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('next').style.visibility = "visible";
         }
 
+        slimages = slides.getElementsByClassName("slideimg");
+        newpos = position - 1;
+	if((position < currentIndex) && ((newpos - 1) >= 0)) {
+	    console.log("loading:", newpos - 1);
+            slimages[newpos - 1].src = slimages[newpos - 1].alt;
+	}
+	else {
+	    console.log("loading:", newpos + 1);
+            slimages[newpos + 1 ].src = slimages[newpos + 1].alt;
+	}
+
         currentIndex = position;
         updateCounter(currentIndex);
     }
@@ -98,17 +133,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     images.forEach(function (imageObj) {
+        var width = parseInt(imageObj.width);
+        var height = parseInt(imageObj.height);
         var slimg = document.createElement('img');
-        slimg.loading = 'lazy'
-        slimg.src = imageObj.filename;
+	slimg.alt = imageObj.filename;
+	slimg.width = width;
+	slimg.height = height;
         slimg.className = 'slideimg';
         var slide = document.createElement('div');
         slide.className = 'slide';
         slide.appendChild(slimg);
         slides.appendChild(slide);
         var filename = imageObj.filename;
-        var width = parseInt(imageObj.width);
-        var height = parseInt(imageObj.height);
         var thumb = imageObj.filename.replace(/images\/(.*)$/i, 'images/thumb_$1');
         var aspect = height / width;
         var box = document.createElement('div');
