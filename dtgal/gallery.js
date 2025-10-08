@@ -18,7 +18,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     var currentIndex = 1;
     var imageCount = 0;
-
+    const slides = document.getElementById('slides1');
     function updateCounter(index) {
         const counter = document.getElementById('counter');
         counter.textContent = (index) + ' / ' + imageCount;
@@ -27,8 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function showModal(e) {
         const thumbbox = e.target.parentElement;
         const gallery = thumbbox.parentElement;
-        index = [...gallery.children].indexOf(thumbbox);
-        var slides = document.getElementById('slides1');
+        const index = [...gallery.children].indexOf(thumbbox);
         document.getElementById('slider1').style.display = 'grid';
         document.getElementById('gallery').style.display = 'none';
         document.getElementById('heading1').style.display = 'none';
@@ -40,20 +39,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function arrowClicked(event, direction) {
-        var slides = document.getElementById('slides1');
         scrollBy = direction * slides.scrollWidth / imageCount;
         slides.scrollBy({ top: 0, left: scrollBy, behavior: 'smooth' });
     }
 
     // adjust visibility of left/right arrows
     function scrolled(event) {
-        var slides = document.getElementById('slides1');
         var scrollRatio = slides.scrollLeft / slides.scrollWidth;
 
         position = 1 + Math.round(scrollRatio * imageCount);
-        if (position == currentIndex) {
+        if (position == currentIndex)
             return;
-        }
 
         if (position == 1) {
             document.getElementById('previous').style.visibility = "hidden";
@@ -77,11 +73,10 @@ document.addEventListener('DOMContentLoaded', function () {
     var json_data = JSON.parse(file.responseText);
     var images = json_data.images;
 
-    var gallery = document.getElementById('gallery');
-    var slides = document.getElementById('slides1');
+    const gallery = document.getElementById('gallery');
 
-    var title = document.getElementById('gallery-title');
-    var pageTitle = document.getElementById('page-title');
+    const title = document.getElementById('gallery-title');
+    const pageTitle = document.getElementById('page-title');
     if (json_data.name) {
         title.textContent = json_data.name;
         pageTitle.textContent = json_data.name;
@@ -89,31 +84,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
     imageCount = images.length;
     images.forEach(function (imageObj) {
-        var slimg = document.createElement('img');
-        slimg.loading = 'lazy'
-        slimg.src = imageObj.filename;
+        // modal view slider
+        const filename = imageObj.filename;
+        const slimg = document.createElement('img');
+
         slimg.className = 'slideimg';
-        var slide = document.createElement('div');
+        slimg.loading = 'lazy'
+        slimg.src = filename;
+
+        const slide = document.createElement('div');
         slide.className = 'slide';
+
         slide.appendChild(slimg);
         slides.appendChild(slide);
-        var filename = imageObj.filename;
-        var width = parseInt(imageObj.width);
-        var height = parseInt(imageObj.height);
-        var thumb = imageObj.filename.replace(/images\/(.*)$/i, 'images/thumb_$1');
-        var aspect = height / width;
-        var box = document.createElement('div');
-        var boxsize = 150;
-        var sum = width + height;
-        var scalefactor = sum / (boxsize * 2.0);
+
+        // thumbnail gallery
+        const box = document.createElement('div');
+        box.className = 'thumb-box';
+        const boxsize = 150;
+
+        const width = parseInt(imageObj.width);
+        const height = parseInt(imageObj.height);
+        const aspect = height / width;
+        const sum = width + height;
+        const scalefactor = sum / (boxsize * 2.0);
         box.style.width = (width / scalefactor) + 'px';
         box.style.height = (height / scalefactor) + 'px';
-        box.className = 'thumb-box';
+
         var img = document.createElement('img');
-        img.src = thumb;
-        img.alt = filename;
         img.className = 'thumb';
+        img.src = filename.replace(/images\/(.*)$/i, 'images/thumb_$1');
+        img.alt = filename;
         img.addEventListener('click', function (e) { e.stopPropagation(); showModal(e); });
+
         box.appendChild(img);
         gallery.appendChild(box);
     });
@@ -151,24 +154,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    slider = document.querySelector('.slider');
-    document.getElementById('slides1').addEventListener(
-        'scroll', event => scrolled(event)
-    );
+    slides.addEventListener('scroll', event => scrolled(event));
 
+    nextButton = document.getElementById('next');
+    previousButton = document.getElementById('previous');
 
-    document.getElementById('previous').style.visibility = "hidden";
+    previousButton.style.visibility = "hidden";
 
+    const slider = document.getElementById('slider1');
     if (slider.childElementCount < 1) {
-        document.getElementById('next').style.visibility = "hidden";
+        nextButton.style.visibility = "hidden";
     }
 
-    document.getElementById('previous').addEventListener(
-        'click', event => arrowClicked(event, -1)
-    );
-
-    document.getElementById('next').addEventListener(
-        'click', event => arrowClicked(event, 1)
-    );
+    previousButton.addEventListener('click', event => arrowClicked(event, -1));
+    nextButton.addEventListener('click', event => arrowClicked(event, 1));
     updateCounter(1);
 });
