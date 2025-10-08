@@ -19,6 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var currentIndex = 1;
     var imageCount = 0;
     const slides = document.getElementById('slides1');
+    const slider = document.getElementById('slider1');
+    const gallery = document.getElementById('gallery');
+
     function updateCounter(index) {
         const counter = document.getElementById('counter');
         counter.textContent = (index) + ' / ' + imageCount;
@@ -26,11 +29,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showModal(e) {
         const thumbbox = e.target.parentElement;
-        const gallery = thumbbox.parentElement;
         const index = [...gallery.children].indexOf(thumbbox);
-        document.getElementById('slider1').style.display = 'grid';
-        document.getElementById('gallery').style.display = 'none';
+
+        gallery.style.display = 'none';
         document.getElementById('heading1').style.display = 'none';
+        slider.style.display = 'grid';
+
         const scrollpos = index * slides.scrollWidth / slides.childElementCount;
         if(index > 0)
             slides.scroll({ top: 0, left: scrollpos, behavior: 'instant' });
@@ -67,13 +71,11 @@ document.addEventListener('DOMContentLoaded', function () {
         updateCounter(currentIndex);
     }
 
-    var file = new XMLHttpRequest();
+    const file = new XMLHttpRequest();
     file.open("GET", "images.json", false);
     file.send();
-    var json_data = JSON.parse(file.responseText);
-    var images = json_data.images;
-
-    const gallery = document.getElementById('gallery');
+    const json_data = JSON.parse(file.responseText);
+    const images = json_data.images;
 
     const title = document.getElementById('gallery-title');
     const pageTitle = document.getElementById('page-title');
@@ -111,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
         box.style.width = (width / scalefactor) + 'px';
         box.style.height = (height / scalefactor) + 'px';
 
-        var img = document.createElement('img');
+        const img = document.createElement('img');
         img.className = 'thumb';
         img.src = filename.replace(/images\/(.*)$/i, 'images/thumb_$1');
         img.alt = filename;
@@ -128,9 +130,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function closeModal() {
         exitFullscreen(document.documentElement);
-        document.getElementById('slider1').style.display = 'none';
-        document.getElementById('gallery').style.display = 'flex';
+        slider.style.display = 'none';
         document.getElementById('heading1').style.display = 'grid';
+        gallery.style.display = 'flex';
     };
 
     document.getElementById('close').onclick = function (e) {
@@ -161,7 +163,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     previousButton.style.visibility = "hidden";
 
-    const slider = document.getElementById('slider1');
     if (slider.childElementCount < 1) {
         nextButton.style.visibility = "hidden";
     }
