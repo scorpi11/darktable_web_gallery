@@ -84,7 +84,7 @@ local function get_dimensions(image)
     return image.width, image.height
 end
 
-local function fill_json_table(images_ordered, images_table, title, dest_dir)
+local function fill_gallery_table(images_ordered, images_table, title, dest_dir)
     dest_dir = dest_dir.."/images"
     local gallery_data = { name = title }
 
@@ -105,12 +105,32 @@ local function fill_json_table(images_ordered, images_table, title, dest_dir)
     return gallery_data
 end
 
-local function write_json_file(json_table, dest_dir)
-    dt.print("write JSON file")
+local function generate_javascript_gallery_object(gallery)
+    local js = 'const gallery_data = {\n'
+    js = js .. '  name: "' .. gallery.name .. '",\n'
+    js = js .. '  images: [\n'
 
-    local fileOut, errr = io.open(dest_dir.."/images.json", 'w+')
+    for i, img in ipairs(gallery.images) do
+        js = js .. string.format('    { filename: "%s", height: %d, width: %d }', img.filename, img.height, img.width)
+        if i < #gallery.images then
+            js = js .. ',\n'
+        else
+            js = js .. '\n'
+        end
+    end
+
+    js = js .. '  ]\n};\n'
+
+    return(js)
+end
+
+local function write_javascript_file(gallery_table, dest_dir)
+    dt.print("write JavaScript file")
+    javascript_object = generate_javascript_gallery_object(gallery_table)
+
+    local fileOut, errr = io.open(dest_dir.."/images.js", 'w+')
     if fileOut then
-        fileOut:write(json_pretty_print:pretty_print(json_table))
+        fileOut:write(javascript_object)
     else
         log.msg(log.error, errr)
     end
@@ -145,8 +165,8 @@ local function build_gallery(storage, images_table, extra_data)
         title = title_widget.text
     end
 
-    gallerydata = fill_json_table(images_ordered, images_table, title, dest_dir)
-    write_json_file(gallerydata, dest_dir)
+    gallerydata = fill_gallery_table(images_ordered, images_table, title, dest_dir)
+    write_javascript_file(gallerydata, dest_dir)
     copy_static_files(dest_dir)
 end
 

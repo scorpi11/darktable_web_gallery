@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function arrowClicked(event, direction) {
+        event.stopPropagation();
         scrollBy = direction * slides.scrollWidth / imageCount;
         slides.scrollBy({ top: 0, left: scrollBy, behavior: 'smooth' });
     }
@@ -77,17 +78,13 @@ document.addEventListener('DOMContentLoaded', function () {
         updateCounter(currentIndex);
     }
 
-    const file = new XMLHttpRequest();
-    file.open("GET", "images.json", false);
-    file.send();
-    const json_data = JSON.parse(file.responseText);
-    const images = json_data.images;
+    const images = gallery_data.images;
 
     const title = document.getElementById('gallery-title');
     const pageTitle = document.getElementById('page-title');
-    if (json_data.name) {
-        title.textContent = json_data.name;
-        pageTitle.textContent = json_data.name;
+    if (gallery_data.name) {
+        title.textContent = gallery_data.name;
+        pageTitle.textContent = gallery_data.name;
     }
 
     imageCount = images.length;
