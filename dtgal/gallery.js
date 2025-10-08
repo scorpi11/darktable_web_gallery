@@ -16,11 +16,12 @@
 */
 
 document.addEventListener('DOMContentLoaded', function () {
-    currentIndex = 1;
+    var currentIndex = 1;
+    var imageCount = 0;
 
     function updateCounter(index) {
         const counter = document.getElementById('counter');
-        counter.textContent = (index) + ' / ' + images.length;
+        counter.textContent = (index) + ' / ' + imageCount;
     }
 
     function showModal(e) {
@@ -31,24 +32,25 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('slider1').style.display = 'grid';
         document.getElementById('gallery').style.display = 'none';
         document.getElementById('heading1').style.display = 'none';
+        const scrollpos = index * slides.scrollWidth / slides.childElementCount;
         if(index > 0)
-            slides.scroll(index * slides.scrollWidth / slides.childElementCount, 0);
+            slides.scroll({ top: 0, left: scrollpos, behavior: 'instant' });
         else
-            setTimeout(() => {slides.scroll({ top: 0, left: 0, behavior: "auto" });}, 5);
+            setTimeout(() => {slides.scroll({ top: 0, left: 0, behavior: "instant" });}, 5);
     }
 
     function arrowClicked(event, direction) {
         var slides = document.getElementById('slides1');
-        slides.scrollLeft += direction * slides.scrollWidth / slides.childElementCount;
+        scrollBy = direction * slides.scrollWidth / imageCount;
+        slides.scrollBy({ top: 0, left: scrollBy, behavior: 'smooth' });
     }
 
     // adjust visibility of left/right arrows
     function scrolled(event) {
         var slides = document.getElementById('slides1');
         var scrollRatio = slides.scrollLeft / slides.scrollWidth;
-        var size = slides.childElementCount;
 
-        position = 1 + Math.round(scrollRatio * size);
+        position = 1 + Math.round(scrollRatio * imageCount);
         if (position == currentIndex) {
             return;
         }
@@ -59,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('previous').style.visibility = "visible";
         }
 
-        if (position == size) {
+        if (position == imageCount) {
             document.getElementById('next').style.visibility = "hidden";
         } else {
             document.getElementById('next').style.visibility = "visible";
@@ -85,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
         pageTitle.textContent = json_data.name;
     }
 
+    imageCount = images.length;
     images.forEach(function (imageObj) {
         var slimg = document.createElement('img');
         slimg.loading = 'lazy'
@@ -129,22 +132,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('close').onclick = function (e) {
         e.stopPropagation();
-	closeModal();
+        closeModal();
     };
 
     // Keyboard navigation using left/right arrow keys
     document.onkeyup = function (e) {
         e.stopPropagation();
-	switch(e.key) {
-	case "Escape":
-	    closeModal();
-	    break;
-	case "ArrowLeft":
+        switch(e.key) {
+        case "Escape":
+            closeModal();
+            break;
+        case "ArrowLeft":
             arrowClicked(e, -1);
-	    break;
-	case "ArrowRight":
-	    arrowClicked(e, 1);
-	    break;
+            break;
+        case "ArrowRight":
+            arrowClicked(e, 1);
+            break;
         }
     };
 
