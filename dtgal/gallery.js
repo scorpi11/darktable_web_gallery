@@ -35,11 +35,16 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('heading1').style.display = 'none';
         slider.style.display = 'grid';
 
+        // Check if scrolling is needed
+        if((index + 1) == currentIndex)
+            return;
+
         const scrollpos = index * slides.scrollWidth / slides.childElementCount;
         if(index > 0)
             slides.scroll({ top: 0, left: scrollpos, behavior: 'instant' });
         else
-            setTimeout(() => {slides.scroll({ top: 0, left: 0, behavior: "instant" });}, 5);
+            // -1 as scroll(0,0) does not work
+            slides.scroll({ top: -1, left: 0, behavior: "instant" });
     }
 
     function arrowClicked(event, direction) {
@@ -51,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function scrolled(event) {
         var scrollRatio = slides.scrollLeft / slides.scrollWidth;
 
+        // Debounce scroll event callback
         position = 1 + Math.round(scrollRatio * imageCount);
         if (position == currentIndex)
             return;
