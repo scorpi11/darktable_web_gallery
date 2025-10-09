@@ -62,6 +62,21 @@ local function get_file_name(file)
     return file:match("[^/]*.$")
 end
 
+function escape_js_string(str)
+  local replacements = {
+    ['\\'] = '\\\\',
+    ['"']  = '\\"',
+    ["'"]  = "\\'",
+    ['\n'] = '\\n',
+    ['\r'] = '\\r',
+    ['\t'] = '\\t',
+    ['\b'] = '\\b',
+    ['\f'] = '\\f',
+    ['\v'] = '\\v'
+  }
+  return (str:gsub('[\\\"\n\r\t\b\f\v\']', replacements))
+end
+
 local function export_thumbnail(image, filename)
     dt.print("export thumbnail image "..filename)
     exporter = dt.new_format("jpeg")
@@ -85,7 +100,7 @@ end
 
 local function fill_gallery_table(images_ordered, images_table, title, dest_dir)
     dest_dir = dest_dir.."/images"
-    local gallery_data = { name = title }
+    local gallery_data = { name = escape_js_string(title) }
 
     local images = {}
     local index = 1
@@ -93,7 +108,7 @@ local function fill_gallery_table(images_ordered, images_table, title, dest_dir)
         local filename = images_table[image]
         write_image(image, dest_dir, filename)
         width, height = get_dimensions(image)
-        local entry = { filename = "images/"..get_file_name(filename),
+        local entry = { filename = "images/"..get_file_name(escape_js_string(filename)),
                         width = width, height = height
         }
         images[index] = entry
