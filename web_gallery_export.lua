@@ -110,7 +110,7 @@ local function generate_javascript_gallery_object(gallery)
     js = js .. '  images: [\n'
 
     for i, img in ipairs(gallery.images) do
-        js = js .. string.format('    { filename: "%s", height: %d, width: %d }', img.filename, img.height, img.width)
+        js = js .. string.format('    { filename: "%s",\n      height: %d,\n      width: %d }', img.filename, img.height, img.width)
         if i < #gallery.images then
             js = js .. ',\n'
         else
