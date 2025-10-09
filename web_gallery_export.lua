@@ -28,7 +28,6 @@
 
 local dt = require "darktable"
 local df = require "lib/dtutils.file"
-local json_pretty_print = require "lib/json_pretty_print"
 
 local temp = dt.preferences.read('web_gallery', 'title', 'string')
 if temp == nil then temp = 'Darktable gallery' end
