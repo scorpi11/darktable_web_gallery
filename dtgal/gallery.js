@@ -22,11 +22,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const slider = document.getElementById('slider1');
     const gallery = document.getElementById('gallery');
 
-    function updateCounter(index) {
-        const counter = document.getElementById('counter');
-        counter.textContent = (index) + ' / ' + imageCount;
-    }
-
     function showModal(e) {
         const thumbbox = e.target.parentElement;
         const index = [...gallery.children].indexOf(thumbbox);
@@ -78,6 +73,55 @@ document.addEventListener('DOMContentLoaded', function () {
         updateCounter(currentIndex);
     }
 
+    function closeModal() {
+        exitFullscreen(document.documentElement);
+        slider.style.display = 'none';
+        document.getElementById('heading1').style.display = 'grid';
+        gallery.style.display = 'flex';
+    };
+
+    function updateCounter(index) {
+        const counter = document.getElementById('counter');
+        counter.textContent = (index) + ' / ' + imageCount;
+    }
+
+    function createSliderElement(imageObj) {
+        const slimg = document.createElement('img');
+
+        slimg.className = 'slideimg';
+        slimg.loading = 'lazy'
+        slimg.src = imageObj.filename;
+
+        const slide = document.createElement('div');
+        slide.className = 'slide';
+
+        slide.appendChild(slimg);
+        slides.appendChild(slide);
+    }
+
+    function createThumbnailElement(imageObj) {
+        const frame = document.createElement('div');
+        frame.className = 'thumb-box';
+        const framesize = 150;
+
+        const width = parseInt(imageObj.width);
+        const height = parseInt(imageObj.height);
+        const aspect = height / width;
+        const sum = width + height;
+        const scalefactor = sum / (framesize * 2.0);
+        frame.style.width = (width / scalefactor) + 'px';
+        frame.style.height = (height / scalefactor) + 'px';
+
+        const img = document.createElement('img');
+        img.className = 'thumb';
+        img.src = imageObj.filename.replace(/images\/(.*)$/i, 'images/thumb_$1');
+        img.alt = imageObj.filename;
+        img.addEventListener('click', function (e) { e.stopPropagation(); showModal(e); });
+
+        frame.appendChild(img);
+        gallery.appendChild(frame);
+    }
+
     const images = gallery_data.images;
 
     const title = document.getElementById('gallery-title');
@@ -88,55 +132,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     imageCount = images.length;
+    // Populate thumbnail gallery and modal slider
     images.forEach(function (imageObj) {
-        // modal view slider
-        const filename = imageObj.filename;
-        const slimg = document.createElement('img');
-
-        slimg.className = 'slideimg';
-        slimg.loading = 'lazy'
-        slimg.src = filename;
-
-        const slide = document.createElement('div');
-        slide.className = 'slide';
-
-        slide.appendChild(slimg);
-        slides.appendChild(slide);
-
-        // thumbnail gallery
-        const box = document.createElement('div');
-        box.className = 'thumb-box';
-        const boxsize = 150;
-
-        const width = parseInt(imageObj.width);
-        const height = parseInt(imageObj.height);
-        const aspect = height / width;
-        const sum = width + height;
-        const scalefactor = sum / (boxsize * 2.0);
-        box.style.width = (width / scalefactor) + 'px';
-        box.style.height = (height / scalefactor) + 'px';
-
-        const img = document.createElement('img');
-        img.className = 'thumb';
-        img.src = filename.replace(/images\/(.*)$/i, 'images/thumb_$1');
-        img.alt = filename;
-        img.addEventListener('click', function (e) { e.stopPropagation(); showModal(e); });
-
-        box.appendChild(img);
-        gallery.appendChild(box);
+        createThumbnailElement(imageObj);
+        createSliderElement(imageObj);
     });
 
-    document.getElementById('fullscreen').onclick = function (e) {
-        e.stopPropagation();
-        toggleFullscreen(document.documentElement);
-    };
+    nextButton = document.getElementById('next');
+    previousButton = document.getElementById('previous');
 
-    function closeModal() {
-        exitFullscreen(document.documentElement);
-        slider.style.display = 'none';
-        document.getElementById('heading1').style.display = 'grid';
-        gallery.style.display = 'flex';
-    };
+    previousButton.style.visibility = "hidden";
+
+    if (slider.childElementCount < 1) {
+        nextButton.style.visibility = "hidden";
+    }
+
+    previousButton.addEventListener('click', event => arrowClicked(event, -1));
+    nextButton.addEventListener('click', event => arrowClicked(event, 1));
+
+    slides.addEventListener('scroll', event => scrolled(event));
 
     document.getElementById('close').onclick = function (e) {
         e.stopPropagation();
@@ -159,18 +173,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    slides.addEventListener('scroll', event => scrolled(event));
+    document.getElementById('fullscreen').onclick = function (e) {
+        e.stopPropagation();
+        toggleFullscreen(document.documentElement);
+    };
 
-    nextButton = document.getElementById('next');
-    previousButton = document.getElementById('previous');
-
-    previousButton.style.visibility = "hidden";
-
-    if (slider.childElementCount < 1) {
-        nextButton.style.visibility = "hidden";
-    }
-
-    previousButton.addEventListener('click', event => arrowClicked(event, -1));
-    nextButton.addEventListener('click', event => arrowClicked(event, 1));
     updateCounter(1);
 });
