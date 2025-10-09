@@ -102,15 +102,15 @@ document.addEventListener('DOMContentLoaded', function () {
     function createThumbnailElement(imageObj) {
         const frame = document.createElement('div');
         frame.className = 'thumb-box';
-        const framesize = 150;
+        const framesize = 18;
 
         const width = parseInt(imageObj.width);
         const height = parseInt(imageObj.height);
         const aspect = height / width;
         const sum = width + height;
         const scalefactor = sum / (framesize * 2.0);
-        frame.style.width = (width / scalefactor) + 'px';
-        frame.style.height = (height / scalefactor) + 'px';
+        frame.style.width = (width / scalefactor) + 'vw';
+        frame.style.height = (height / scalefactor) + 'vw';
 
         const img = document.createElement('img');
         img.className = 'thumb';
