@@ -91,14 +91,28 @@ local function write_image(image, dest_dir, filename)
     export_thumbnail(image, dest_dir.."/thumb_"..get_file_name(filename))
 end
 
-local function get_dimensions(image)
-    if image.final_width > 0 then
-        return image.final_width, image.final_height
+function exiftool_get_image_dimensions(filename)
+    local handle = io.popen("exiftool " .. filename)
+    local result = handle:read("*a")
+    handle:close()
+    for line in result:gmatch("[^\r\n]+") do
+        local w = line:match("^Image Width%s*:%s*(%d+)")
+        if w then
+            width = tonumber(w)
+        end
+        local h = line:match("^Image Height%s*:%s*(%d+)")
+        if h then
+            height = tonumber(h)
+        end
     end
-    return image.width, image.height
+    if width and height then
+        return width, height
+    else
+        return nil, nil
+    end
 end
 
-local function fill_gallery_table(images_ordered, images_table, title, dest_dir)
+local function fill_gallery_table(images_ordered, images_table, title, dest_dir, sizes, exiftool)
     dest_dir = dest_dir.."/images"
     local gallery_data = { name = escape_js_string(title) }
 
@@ -107,10 +121,17 @@ local function fill_gallery_table(images_ordered, images_table, title, dest_dir)
     for i, image in pairs(images_ordered) do
         local filename = images_table[image]
         write_image(image, dest_dir, filename)
-        width, height = get_dimensions(image)
+
+        if exiftool then
+            width, height = exiftool_get_image_dimensions(dest_dir.."/"..get_file_name(filename))
+        else
+            width = sizes[index].width
+            height = sizes[index].height
+        end
+
         local entry = { filename = "images/"..get_file_name(escape_js_string(filename)),
-                        width = width, height = height
-        }
+                        width = width, height = height}
+
         images[index] = entry
         index = index + 1
     end
@@ -173,13 +194,13 @@ local function build_gallery(storage, images_table, extra_data)
     df.mkdir(dest_dir.."/images")
 
     local images_ordered = extra_data["images"] -- process images in the correct order
-
+    local sizes = extra_data["sizes"]
     local title = "Darktable export"
     if title_widget.text ~= "" then
         title = title_widget.text
     end
-
-    gallerydata = fill_gallery_table(images_ordered, images_table, title, dest_dir)
+    local exiftool = df.check_if_bin_exists("exiftool");
+    gallerydata = fill_gallery_table(images_ordered, images_table, title, dest_dir, sizes, exiftool)
     write_javascript_file(gallerydata, dest_dir)
     copy_static_files(dest_dir)
 end
@@ -206,11 +227,35 @@ script_data.destroy = destroy
 local function show_status(storage, image, format, filename,
   number, total, high_quality, extra_data)
     dt.print(string.format("export image %i/%i", number, total))
+    aspect = image.aspect_ratio
+    -- calculate the size of the exported image and store it in extra_data
+    -- to make it available in the finalize function
+    if image.final_height == 0 then
+        if aspect < 1 then
+            dimensions = { width = image.height, height = image.width }
+        else
+            dimensions = { width = image.width, height = image.height }
+        end
+    else
+        dimensions = { width = image.final_width, height = image.final_height }
+    end
+    if format.max_height > 0 and dimensions.height > format.max_height then
+        scale = format.max_height / dimensions.height
+        dimensions.height = math.floor(dimensions.height * scale + 0.5)
+        dimensions.width = math.floor(dimensions.width * scale + 0.5)
+    end
+    if format.max_width > 0 and dimensions.width > format.max_width then
+        scale = format.max_width / dimensions.width
+        dimensions.height = math.floor(dimensions.height * scale + 0.5)
+        dimensions.width = math.floor(dimensions.width * scale + 0.5)
+    end
+    extra_data["sizes"][number] = dimensions
 end
 
 local function initialize(storage, img_format, images, high_quality, extra_data)
     dt.preferences.write('web_gallery', 'title', 'string', title_widget.text)
     extra_data["images"] = images -- needed, to preserve images order
+    extra_data["sizes"] = {};
 end
 
 dt.register_storage("module_webgallery", "website gallery (new)", show_status, build_gallery, nil, initialize, gallery_widget)
