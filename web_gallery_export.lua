@@ -18,12 +18,10 @@
 
 --[[
    TODO:
+   - before PR: Zoom, export code from wpferguson, use share_dir
    - Lua: remove images dir if already existent
-   - Lua: use share_dir once available in the API
    - Lua: implement "supported" callback to limit export to suited file formats
-   - JS: implement zoom function as present in PhotoSwipe
    - Lua: translations
-   - copyright headers
 ]]
 
 local dt = require "darktable"
@@ -130,7 +128,7 @@ local function fill_gallery_table(images_ordered, images_table, title, dest_dir,
         end
 
         local entry = { filename = "images/"..get_file_name(escape_js_string(filename)),
-                        width = width, height = height}
+                        width = width, height = height }
 
         images[index] = entry
         index = index + 1
@@ -178,7 +176,8 @@ local function copy_static_files(dest_dir)
     gfiles = {
         "index.html",
         "gallery.css",
-        "slider.css",
+        "modal.css",
+	"modal.js",
         "gallery.js",
         "fullscreen.js"
     }
