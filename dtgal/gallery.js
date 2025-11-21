@@ -15,6 +15,9 @@
     along with this software.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+var scrollPosX = 0;
+var scrollPosY = 0;
+
 document.addEventListener('DOMContentLoaded', function () {
     var imageCount = 0;
     const gallery = document.getElementById('gallery');
@@ -24,6 +27,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const thumbbox = e.target.parentElement;
         const index = [...gallery.children].indexOf(thumbbox);
         currentIndex = index;
+        scrollPosX = document.documentElement.scrollLeft;
+        scrollPosY = document.documentElement.scrollTop;
 
         gallery.style.display = 'none';
         document.getElementById('heading1').style.display = 'none';
@@ -39,6 +44,11 @@ document.addEventListener('DOMContentLoaded', function () {
         viewer.style.display = 'none';
         document.getElementById('heading1').style.display = 'grid';
         gallery.style.display = 'flex';
+        document.documentElement.scrollTo({
+	    left: scrollPosX,
+            top: scrollPosY,
+            behavior: "instant",
+        });
     };
 
     function createThumbnailElement(imageObj) {
