@@ -93,7 +93,8 @@ document.addEventListener('DOMContentLoaded', function () {
         e.stopPropagation();
         toggleFullscreen(document.documentElement);
     };
-        // Populate thumbnail gallery and modal slider
+
+    // Populate thumbnail gallery
     images.forEach(function (imageObj) {
         createThumbnailElement(imageObj);
     });
