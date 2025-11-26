@@ -93,26 +93,3 @@ body {
     font-family: Arial, sans-serif;
     font-size: 16px;
 }
-
-.image-container {
-    touch-action: none;
-}
-
-.image-container img {
-    max-width: 100vw;
-    max-height: 95vh;
-    padding: 0;
-    margin: 0;
-    height: auto;
-    display: block;
-    transform-origin: 0 0;
-}
-
-.image-container img.zooming {
-    transition: transform 0.2s ease-out;
-}
-
-.image-container.zoomed {
-    cursor: zoom-out;
-}
-
